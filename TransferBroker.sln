@@ -7,12 +7,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransferBroker", "TransferB
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Beta|Any CPU = Beta|Any CPU
 		Debug|Any CPU = Debug|Any CPU
+		Experimental|Any CPU = Experimental|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{694B950E-548C-4779-8A30-CB75D41EB58C}.Beta|Any CPU.ActiveCfg = Beta|Any CPU
+		{694B950E-548C-4779-8A30-CB75D41EB58C}.Beta|Any CPU.Build.0 = Beta|Any CPU
 		{694B950E-548C-4779-8A30-CB75D41EB58C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{694B950E-548C-4779-8A30-CB75D41EB58C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{694B950E-548C-4779-8A30-CB75D41EB58C}.Experimental|Any CPU.ActiveCfg = Experimental|Any CPU
+		{694B950E-548C-4779-8A30-CB75D41EB58C}.Experimental|Any CPU.Build.0 = Experimental|Any CPU
 		{694B950E-548C-4779-8A30-CB75D41EB58C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{694B950E-548C-4779-8A30-CB75D41EB58C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection

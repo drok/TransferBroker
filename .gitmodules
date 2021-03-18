@@ -1,0 +1,3 @@
+[submodule "TransferBroker/High-Speed-Priority-Queue-for-C-Sharp"]
+	path = TransferBroker/High-Speed-Priority-Queue-for-C-Sharp
+	url = https://github.com/BlueRaja/High-Speed-Priority-Queue-for-C-Sharp.git
