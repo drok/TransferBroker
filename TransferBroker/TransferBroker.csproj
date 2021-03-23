@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -11,7 +11,7 @@
     <AssemblyName>TransferBroker</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
+    <Deterministic>false</Deterministic>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -49,18 +49,35 @@
     <LangVersion>latest</LangVersion>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <SteamPath>~/Library/Application Support/Steam/</SteamPath>
+    <SteamPath Condition="! Exists ('$(SteamPath)')">$(ProgramFiles)\Steam</SteamPath>
+    <SteamPath Condition="! Exists ('$(SteamPath)')">$(Registry:HKEY_CURRENT_USER\Software\Valve\Steam@SteamPath)</SteamPath>
+    <CSPath>$(SteamPath)\steamapps\common\Cities_Skylines</CSPath>
+    <CSPath Condition="!  Exists ('$(CSPath)')">Q:\SteamLibrary\steamapps\common\Cities_Skylines</CSPath>
+    <MangedDLLPath>$(CSPath)\Cities_Data\Managed</MangedDLLPath>
+    <MangedDLLPath Condition="!  Exists ('$(MangedDLLPath)')">..\dependencies</MangedDLLPath>
+    <UnityPath>$(MSBuildExtensionsPath64)\..\Unity\</UnityPath>
+    <UnityPath Condition="! Exists ('$(UnityPath)')">F:\Programs\Unity\</UnityPath>
+    <UnityPath Condition="! Exists ('$(UnityPath)')">..\Unity\</UnityPath>
+  </PropertyGroup>
+
   <ItemGroup>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\References\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="ColossalManaged, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\References\ColossalManaged.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="ICities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\References\ICities.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -69,6 +86,7 @@
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\References\UnityEngine.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -96,6 +114,8 @@
     <Compile Include="Patch\_WorldInfoPanels\SetTargetPatch.cs" />
     <Compile Include="Patch\_WorldInfoPanels\UpdateBindingsPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\SharedAssemblyInfo.cs" />
+    <Compile Include="Properties\Versioning.cs" />
     <Compile Include="Source\AssetDataExtension.cs" />
     <Compile Include="Source\BuildingExtension.cs" />
     <Compile Include="Source\DocumentationMilestone.cs" />
@@ -114,6 +134,37 @@
       <Version>0.9.0</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
+  <Target Name="PostBuildMacros">
+    <!-- Code from https://superuser.com/questions/82231/how-do-i-do-comments-at-a-windows-command-prompt -->
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+      <Output TaskParameter="Assemblies" ItemName="Targets" />
+    </GetAssemblyIdentity>
+    <ItemGroup>
+      <VersionNumber Include="@(Targets->'%(Version)')" />
+      <UnityDir Include="$(UnityPath)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="DeployAsLocalMod" AfterTargets="Build">
+    <PropertyGroup>
+      <ModDirectory>$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)-$(Configuration)\</ModDirectory>
+    </PropertyGroup>
+    <ItemGroup>
+      <ModFiles Include="$(TargetDir)*.dll" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(Configuration)'!='Release'">
+      <ModFiles Include="$(TargetDir)$(TargetName).dll.mdb" />
+    </ItemGroup>
+
+    <Exec
+      Condition="'$(Configuration)'!='Release'"
+      Command="$(UnityPath)Editor\Data\MonoBleedingEdge\bin\mono.exe $(UnityPath)Editor\Data\MonoBleedingEdge\lib\mono\4.5\pdb2mdb.exe $(TargetDir)$(TargetName).dll" />
+    
+    <Message Text="Installing to Local Mod directory as $(SolutionName)-$(Configuration)" />
+    <!-- <RemoveDir Directories="$(ModDirectory)" /> -->
+    <Delete Files="$(ModDirectory)$(TargetName).dll" />
+    <Copy SourceFiles="@(ModFiles)" DestinationFolder="$(ModDirectory)" />
+  </Target>
 </Project>
