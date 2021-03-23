@@ -47,19 +47,51 @@ namespace TransferBroker.Coloring {
         [HarmonyPrefix]
         [UsedImplicitly]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.NamingRules", "SA1313:Parameter names should begin with lower-case letter", Justification = "Output argument is __result as required by Harmony")]
-        public static bool CargoTruckAI_Color(ref VehicleAI __instance, ushort vehicleID, ref Vehicle data, InfoManager.InfoMode infoMode, ref UnityEngine.Color __result) {
+        public static bool Vehicle_Color(ref VehicleAI __instance, ushort vehicleID, ref Vehicle data, InfoManager.InfoMode infoMode, ref UnityEngine.Color __result) {
 
             /* Use default colors for paths */
             if (TransferBrokerMod.Installed.updatingPathMesh) {
                 return true;
             }
 
+            bool colorVehicle;
+            var visualizer = Singleton<PathVisualizer>.instance;
+            var vehicleInfo = Singleton<VehicleManager>.instance.m_vehicles.m_buffer[vehicleID].Info;
+            switch (vehicleInfo.m_class.m_service) {
+                case ItemClass.Service.Residential:
+                    colorVehicle = visualizer.showPrivateVehicles;
+                    break;
+                case ItemClass.Service.PublicTransport:
+                    if (vehicleInfo.m_class.m_subService == ItemClass.SubService.PublicTransportPost) {
+                        colorVehicle = visualizer.showCityServiceVehicles;
+                    } else {
+                        colorVehicle = visualizer.showPublicTransport;
+                    }
+                    break;
+                case ItemClass.Service.Fishing:
+                    if (vehicleInfo.m_vehicleAI is FishingBoatAI) {
+                        colorVehicle = visualizer.showPublicTransport;
+                    } else {
+                        colorVehicle = visualizer.showTrucks;
+                    }
+                    break;
+                case ItemClass.Service.Industrial:
+                case ItemClass.Service.PlayerIndustry:
+                    colorVehicle = visualizer.showTrucks;
+                    break;
+                default:
+                    colorVehicle = visualizer.showCityServiceVehicles;
+                    break;
+            }
+
+            if (!colorVehicle)
+                return true;
+
             /* Vehicles themselves are colored by distance they must travel */
             switch (infoMode) {
                 case InfoManager.InfoMode.TrafficRoutes:
                     InstanceID instance = InstanceID.Empty;
                     instance.Vehicle = vehicleID;
-                    // if (!Singleton<NetManager>.instance.PathVisualizer.IsPathVisible(instance)) {
 
                     var path = Singleton<VehicleManager>.instance.m_vehicles.m_buffer[vehicleID].m_path;
                     if (path != 0) {
@@ -67,8 +99,6 @@ namespace TransferBroker.Coloring {
                         __result = Color.Lerp(Singleton<InfoManager>.instance.m_properties.m_modeProperties[(int)InfoManager.InfoMode.Traffic].m_targetColor, Singleton<InfoManager>.instance.m_properties.m_modeProperties[(int)InfoManager.InfoMode.Traffic].m_negativeColor, Mathf.Clamp01((float)(int)(pathUnit.m_length - MIN_LERP_DISTANCE) * (1/(FULL_LERP_DISTANCE - MIN_LERP_DISTANCE))));
                         return false;
                     }
-
-                    // }
                     break;
             }
 
