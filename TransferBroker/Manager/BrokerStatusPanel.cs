@@ -226,7 +226,8 @@ namespace TransferBroker.Manager.Impl {
                         return;
                     }
 
-                    path = Singleton<VehicleManager>.instance.m_vehicles.m_buffer[id.Vehicle].m_path;
+                    var firstVehicle = Singleton<VehicleManager>.instance.m_vehicles.m_buffer[id.Vehicle].GetFirstVehicle(id.Vehicle);
+                    path = Singleton<VehicleManager>.instance.m_vehicles.m_buffer[firstVehicle].m_path;
                     break;
                 case InstanceType.Citizen:
                     if (!Singleton<CitizenManager>.exists) {
