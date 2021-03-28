@@ -770,7 +770,7 @@ namespace TransferBroker.Manager.Impl {
             for (int priority = TransferManager.TRANSFER_PRIORITY_COUNT - 1; priority >= 0; --priority) {
                 int tableNum = ((int)material * TransferManager.TRANSFER_PRIORITY_COUNT) + priority;
                 int tableOffset = tableNum * TransferManager.TRANSFER_OFFER_COUNT;
-                Log._DebugFormat("Entries in prio {0} table: {1}..{2} tableNum={3}", priority, startAt[tableNum], endAt[priority], tableNum);
+                // Log._DebugFormat("Entries in prio {0} table: {1}..{2} tableNum={3}", priority, startAt[tableNum], endAt[priority], tableNum);
                 for (int i = startAt[tableNum]; i != endAt[priority]; i = (i + 1) % TransferManager.TRANSFER_OFFER_COUNT) {
 
                     // Log._DebugFormat("{0} #{1} type {2}", outgoing ? "Out" : "In", oid((ushort)priority, (ushort)i), offers[tableOffset + i].m_object.Type);
