@@ -26,8 +26,6 @@ namespace TransferBroker {
             Benchmark.BenchmarkManager.Setup();
         }
 #endif
-        public const string PACKAGE_NAME = "Transfer Broker";
-
 #if LABS
         public const string BRANCH = "BETA";
 #elif DEBUG
@@ -55,7 +53,7 @@ namespace TransferBroker {
         public const string PLAYER_IS_INFORMED = "Ability to Read";
         public const string PLAYER_IS_INFORMED_PACKAGE = "1145223801";
         public const string DOCUMENTATION = "https://steamcommunity.com/sharedfiles/filedetails/?id=2389228470";
-        public const string DOCUMENTATION_TITLE = PACKAGE_NAME + " workshop page on Steam";
+        public const string DOCUMENTATION_TITLE = Versioning.PACKAGE_NAME + " workshop page on Steam";
         public const string DOCUMENTATION_READ_MILESTONE = "Road to Enlightenment";
 
         // Use SharedAssemblyInfo.cs to modify Sane Sourcing version
@@ -72,7 +70,7 @@ namespace TransferBroker {
         public uint ImplementationVersion = Versioning.MyFileVersionNum;
 #endif
 
-        internal static string ModName = PACKAGE_NAME + " " +
+        internal static string ModName = Versioning.PACKAGE_NAME + " " +
 #if LABS || DEBUG || EXPERIMENTAL
                 Assembly.GetExecutingAssembly().GetName().Version.ToString() + " " + BRANCH
 #else
@@ -573,7 +571,7 @@ Warning.Main          1,440.359354: TransferBrokerMod.Uninstall() 0.3.1.30570 ca
 
                 if (isModTooOld) {
                     string msg = string.Format(
-                        PACKAGE_NAME + " detected that you are running " +
+                        Versioning.PACKAGE_NAME + " detected that you are running " +
                         "a newer game version ({0}) than it was built for ({1}). " +
                         "Please be aware that Sane Sourcing has not been updated for the newest game " +
                         "version yet and thus it is disabled.",
@@ -586,7 +584,7 @@ Warning.Main          1,440.359354: TransferBrokerMod.Uninstall() 0.3.1.30570 ca
                                 UIView.library
                                       .ShowModal<ExceptionPanel>("ExceptionPanel")
                                       .SetMessage(
-                                          PACKAGE_NAME + " has not been updated yet",
+                                          Versioning.PACKAGE_NAME + " has not been updated yet",
                                           msg,
                                           false);
                             });
@@ -827,7 +825,7 @@ Warning.Main          1,440.359354: TransferBrokerMod.Uninstall() 0.3.1.30570 ca
                 }
 
             } else {
-                var msg = $"[{PACKAGE_NAME}] WARNING: Required '{PLAYER_IS_INFORMED}' was not found. Suggested tech support level: minimal; refer to {DOCUMENTATION}";
+                var msg = $"[{Versioning.PACKAGE_NAME}] WARNING: Required '{PLAYER_IS_INFORMED}' was not found. Suggested tech support level: minimal; refer to {DOCUMENTATION}";
                 Debug.LogWarning(msg);
                 Log.Info(msg);
             }
@@ -865,7 +863,7 @@ Warning.Main          1,440.359354: TransferBrokerMod.Uninstall() 0.3.1.30570 ca
 #endif
 
                     if (!isInformed) {
-                        var msg = $"[{PACKAGE_NAME}] WARNING: Required '{PLAYER_IS_INFORMED}' was not found. Suggested tech support level: minimal; refer to {DOCUMENTATION}";
+                        var msg = $"[{Versioning.PACKAGE_NAME}] WARNING: Required '{PLAYER_IS_INFORMED}' was not found. Suggested tech support level: minimal; refer to {DOCUMENTATION}";
                         Debug.LogWarning(msg);
                         Log.Info(msg);
                     } else if (!informedMilestone.m_unlocked.value) {

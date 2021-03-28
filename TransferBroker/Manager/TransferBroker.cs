@@ -1426,7 +1426,7 @@ namespace TransferBroker.Manager.Impl {
 #endif
 
                 } else {
-                    Log.Warning($"Vanilla TransferManager instance not found in the Simulators list of Managers. {TransferBrokerMod.PACKAGE_NAME} will be inactive.");
+                    Log.Warning($"Vanilla TransferManager instance not found in the Simulators list of Managers. {Versioning.PACKAGE_NAME} will be inactive.");
                 }
             }
             catch (Exception ex) {
