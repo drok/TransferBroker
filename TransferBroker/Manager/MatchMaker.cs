@@ -13,7 +13,7 @@ namespace TransferBroker.Manager.Impl {
     using System.Collections;
     using System.Collections.Generic;
 
-    internal class MatchMaker {
+    public class MatchMaker {
         public enum MatchMode {
             SatisfyDemand = 1,
             SoakSupply,
