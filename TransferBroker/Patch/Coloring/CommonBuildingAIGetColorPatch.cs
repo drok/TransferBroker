@@ -83,6 +83,8 @@ namespace TransferBroker.Coloring {
                                  lerp);
                         }
                         return false;
+                    } else if (b.Building == TransferBrokerMod.Installed.broker.m_activator || b.Building == TransferBrokerMod.Installed.broker.m_activator_traffic) {
+                        __result = Singleton<InfoManager>.instance.m_properties.m_modeProperties[(int)infoMode].m_activeColor;
                     }
                     // Log.Info($"GetColor({buildingID}) = {prio}");
 
