@@ -22,6 +22,7 @@ namespace TransferBroker {
     [UsedImplicitly]
     public class LoadingExtension : LoadingExtensionBase {
         private TransferBrokerMod mod;
+        private PluginInfo plugin;
 
 #if DEBUG
         private static int instances = 0;
@@ -42,7 +43,8 @@ namespace TransferBroker {
             id = instances++;
             Log.Info($"{GetType().Name}..ctor() {Assembly.GetExecutingAssembly().GetName().Version} id={id}/{instances}");
 #endif
-            mod = Singleton<PluginManager>.instance.FindPluginInfo(Assembly.GetExecutingAssembly()).userModInstance as TransferBrokerMod;
+            plugin = Singleton<PluginManager>.instance.FindPluginInfo(Assembly.GetExecutingAssembly());
+            mod = plugin.userModInstance as TransferBrokerMod;
 
             Assert.IsTrue(mod != null,
                 $"An instance of {mod.GetType().Name} should already exist when {GetType().Name} is instantiated");
@@ -77,12 +79,10 @@ namespace TransferBroker {
                 $"{GetType().Name}.OnCreated() should only be called on inactive mod");
 
             if (mod.IsEnabled && loading.currentMode == AppMode.Game) {
-                ModsCompatibilityChecker mcc = new ModsCompatibilityChecker();
-                mod.IsCompatibleWithOtherMods = mcc.PerformModCheck(mod);
                 InstallIfPlayerIsInformed();
             }
 
-            if (!mod.IsEnabled || loading.currentMode != AppMode.Game || !mod.IsCompatibleWithOtherMods) {
+            if (!mod.IsEnabled || loading.currentMode != AppMode.Game) {
                 active = false;
                 if (!mod.IsGameLoaded && (TransferBrokerMod.Installed != null || mod.installPendingOnHarmonyInstallation)) {
                     mod.Uninstall();
@@ -181,14 +181,7 @@ namespace TransferBroker {
 #endif
             string msg = null;
             if (mod.IsCompatibleWithGame) {
-                if (mod.IsCompatibleWithOtherMods) {
-                    active = true;
-                } else if (mod.IsDependencyMet(TransferBrokerMod.DOCUMENTATION_TITLE)) {
-                    active = true;
-                    msg = $"WARNING: Incompatible mods were found, but thanks to having '{TransferBrokerMod.PLAYER_IS_INFORMED}', you are considered informed. {mod.Name} will now activate.";
-                } else {
-                    msg = $"WARNING: Incompatible mods were found, but it appears you have not read '{TransferBrokerMod.DOCUMENTATION_TITLE}', and are considered uninformed. {mod.Name} will remain inactive.";
-                }
+                active = true;
             }
             if (TransferBrokerMod.Installed == null && !mod.installPendingOnHarmonyInstallation) {
                 if (msg != null) {

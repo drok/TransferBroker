@@ -129,7 +129,6 @@
     <Compile Include="Source\LoadingExtension.cs" />
     <Compile Include="Source\Log.cs" />
     <Compile Include="Source\MilestonesExtension.cs" />
-    <Compile Include="Source\ModsCompatibilityChecker.cs" />
     <Compile Include="Source\MyMilestoneCollection.cs" />
     <Compile Include="Source\Patcher.cs" />
     <Compile Include="Source\Shortcuts.cs" />

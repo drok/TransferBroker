@@ -15,6 +15,7 @@ namespace TransferBroker {
     using TransferBroker.API.Manager;
     using TransferBroker.Manager.Impl;
     using CitiesHarmony.API;
+    using ModConflictManagement;
     using UnityEngine;
     using UnityEngine.Assertions;
 
@@ -92,8 +93,6 @@ namespace TransferBroker {
          * activate instead (simple consensus arbitration)
          */
         public bool willActivate { get { return true; } }
-
-        internal bool IsCompatibleWithOtherMods { get; set; }
 
         /// <summary>
         /// determines whether Game data is loaded.
@@ -179,9 +178,7 @@ namespace TransferBroker {
             Assert.IsTrue(Dispatcher.currentSafe == ThreadHelper.dispatcher,
                 $"{GetType().Name}.OnEnabled() should only be called on Main Thread (not '{Thread.CurrentThread.Name}')");
 
-            IsEnabled = true;
             IsCompatibleWithGame = CheckAppVersion();
-
             /* While debugging. Released versions may be become incompatible when the game updates. */
             Assert.IsTrue(IsCompatibleWithGame,
                 $"{GetType().Name}.OnEnable() the mod should be compatible with app version {GAME_VERSION}");
@@ -189,6 +186,18 @@ namespace TransferBroker {
             if (IsCompatibleWithGame) {
                 // HarmonyHelper.EnsureHarmonyInstalled();
                 HaveNaturalDisastersDLC = SteamHelper.IsDLCOwned(SteamHelper.DLC.NaturalDisastersDLC);
+            }
+
+            IsEnabled = HarmonyHelper.SetIncompatibleMods(new HashSet<IncompatibleMod>(){
+                new IncompatibleMod(){ assemblyName = "EnhancedDistrictServices", },
+                new IncompatibleMod(){ assemblyName = "EnhancedHearseAI",},
+                new IncompatibleMod(){ assemblyName = "EnhancedGarbageTruckAI",},
+                new IncompatibleMod(){ assemblyName = "ServicesOptimizationModule",},
+                new IncompatibleMod(){ assemblyName = "GSteigertDistricts",},
+            });
+
+            if (!IsEnabled) {
+                Log.Warning($"{Versioning.PACKAGE_NAME} is disabled due to conflicting mods. See Harmony Report for details");
             }
 
             if (SceneManager.GetActiveScene().name == "Game") {
@@ -225,13 +234,6 @@ namespace TransferBroker {
 
                 Log._Debug($"Scene is {SceneManager.GetActiveScene().name} .. valid={SceneManager.GetActiveScene().IsValid()}, isloaded={SceneManager.GetActiveScene().isLoaded}, isDirty={SceneManager.GetActiveScene().isDirty}");
 #endif
-
-                if (IsCompatibleWithOtherMods) {
-                    // HarmonyHelper.EnsureHarmonyInstalled();
-
-                } else {
-                    return false;
-                }
 
                 return true;
             }
@@ -353,7 +355,7 @@ namespace TransferBroker {
             }
             catch (Exception ex) {
                 Log.Info($"Harmony Failure; cannot continue running: {ex.Message}\n{ex.StackTrace}");
-                IsCompatibleWithOtherMods = false;
+                IsEnabled = false;
             }
         }
 
@@ -369,7 +371,7 @@ namespace TransferBroker {
                     $"{GetType().Name}.DoInstall() should be called on Simulation Thread when Game is in progress, otherwise on Main Thread. (not '{Thread.CurrentThread.Name}')");
 
             /* FIXME: Version arbitration still allows multiple versions to install conflicting coloring patches */
-            if (IsCompatibleWithOtherMods && Installed != null) {
+            if (IsEnabled && Installed != null) {
 
                 RegisterCustomManagers();
 
