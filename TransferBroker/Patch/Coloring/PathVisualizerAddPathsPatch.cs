@@ -27,7 +27,7 @@ namespace TransferBroker.Coloring {
     using System;
 
     [HarmonyPatch]
-    public static class PathVisualizerAddPathsPatch {
+    internal static class PathVisualizerAddPathsPatch {
 
         /* The vanilla visualiser only highlights paths of visiting vehicles
          * and returning own vehicles.

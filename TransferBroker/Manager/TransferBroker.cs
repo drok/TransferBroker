@@ -18,7 +18,7 @@ namespace TransferBroker.Manager.Impl {
     using System.Diagnostics;
     using System.Collections.Generic;
 
-    public class TransferBroker
+    internal class TransferBroker
             : SimulationManagerBase<TransferBroker, BrokerProperties>, ISimulationManager, ICustomManager,
             // : AbstractCustomManager,
             ITransferBroker {

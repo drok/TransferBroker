@@ -25,7 +25,7 @@ namespace TransferBroker.Coloring {
     using System.Reflection;
 
     [HarmonyPatch]
-    public static class PedestrianGetColorPatch {
+    internal static class PedestrianGetColorPatch {
 
         /* Pedestrians are colored according to the distance they travel,
          * on the same color gradient as the Traffic info panel.

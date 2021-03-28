@@ -25,7 +25,7 @@ namespace TransferBroker.Coloring {
     using System.Reflection;
 
     [HarmonyPatch]
-    public static class VehicleGetColorPatch {
+    internal static class VehicleGetColorPatch {
 
         /* Vehicles are colored according to the distance they travel,
          * on the same color gradient as the Traffic info panel.

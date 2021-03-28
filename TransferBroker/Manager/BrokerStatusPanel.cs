@@ -16,7 +16,7 @@ namespace TransferBroker.Manager.Impl {
     using System.Diagnostics;
     using System.Collections.Generic;
 
-    public class BrokerStatusPanel : UIPanel {
+    internal class BrokerStatusPanel : UIPanel {
         //CityServiceWorldInfoPanel m_ActivatorPanel;
         //CityServiceVehicleWorldInfoPanel m_VehicleP;
         //// CityServiceVehicleWorldInfoPanel

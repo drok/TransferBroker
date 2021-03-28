@@ -5,7 +5,7 @@ using ColossalFramework;
 using UnityEngine;
 using CSUtil.Commons;
 
-public class MyMilestoneCollection : MonoBehaviour {
+internal class MyMilestoneCollection : MonoBehaviour {
     public MilestoneInfo[] m_Milestones;
 
     private Dictionary<string, MilestoneInfo> m_dict = new Dictionary<string, MilestoneInfo>();

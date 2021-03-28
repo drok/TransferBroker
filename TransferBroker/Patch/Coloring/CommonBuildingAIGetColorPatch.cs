@@ -9,7 +9,7 @@ namespace TransferBroker.Coloring {
     using ColossalFramework.Math;
 
     [HarmonyPatch]
-    public static class CommonBuildingAIGetColorPatch {
+    internal static class CommonBuildingAIGetColorPatch {
 
         /* Buildings are colored when they've made an offer which
          * was considered by the matchmaker.

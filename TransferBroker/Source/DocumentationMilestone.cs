@@ -8,7 +8,7 @@ namespace TransferBroker {
     using System.Reflection;
     using CSUtil.Commons;
 
-    public class DocumentationMilestone : MilestoneInfo {
+    internal class DocumentationMilestone : MilestoneInfo {
 
         /* FIXME: hardcoded to document  "SourcingMod.DOCUMENTATION_TITLE"
          * need the fix to support multiple documentations

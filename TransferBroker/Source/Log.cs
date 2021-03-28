@@ -60,7 +60,7 @@ namespace CSUtil.Commons {
     ///
     /// Log.NotImpl logs an error if something is not implemented and only in debug mode
     /// </summary>
-    public static class Log {
+    internal static class Log {
         private static readonly object LogLock = new object();
 
         // TODO refactor log filename to configuration

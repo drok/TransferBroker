@@ -9,7 +9,7 @@ namespace TransferBroker.Manager.Impl {
 
 
     [ExecuteInEditMode]
-    public class BrokerProperties : MonoBehaviour {
+    internal class BrokerProperties : MonoBehaviour {
 
         private TransferBrokerMod mod;
 

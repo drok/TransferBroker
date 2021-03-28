@@ -9,7 +9,7 @@ namespace TransferBroker {
     using TransferBroker.Util;
     using UnityEngine.Assertions;
 
-    public class Patcher {
+    internal class Patcher {
         public static Patcher Instance { get; private set; }
 
         public static Patcher Create() => Instance = new Patcher();
