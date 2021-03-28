@@ -11,7 +11,6 @@ namespace TransferBroker {
     using System.Reflection;
     using TransferBroker.API.Manager;
     using ColossalFramework.Threading;
-    using CitiesHarmony.API;
     using UnityEngine;
     using UnityEngine.Assertions;
 

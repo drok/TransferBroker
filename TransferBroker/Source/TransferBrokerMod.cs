@@ -14,8 +14,7 @@ namespace TransferBroker {
     using System.Collections.Generic;
     using TransferBroker.API.Manager;
     using TransferBroker.Manager.Impl;
-    using CitiesHarmony.API;
-    using ModConflictManagement;
+    using Harmony;
     using UnityEngine;
     using UnityEngine.Assertions;
 
@@ -188,7 +187,7 @@ namespace TransferBroker {
                 HaveNaturalDisastersDLC = SteamHelper.IsDLCOwned(SteamHelper.DLC.NaturalDisastersDLC);
             }
 
-            IsEnabled = HarmonyHelper.SetIncompatibleMods(new HashSet<IncompatibleMod>(){
+            IsEnabled = Harmony.SetIncompatibleMods(new HashSet<IncompatibleMod>(){
                 new IncompatibleMod(){ assemblyName = "EnhancedDistrictServices", },
                 new IncompatibleMod(){ assemblyName = "EnhancedHearseAI",},
                 new IncompatibleMod(){ assemblyName = "EnhancedGarbageTruckAI",},
@@ -270,11 +269,11 @@ namespace TransferBroker {
             Log.Info($"{GetType().Name}.DoWhenHarmonyReady({action.GetType().Name}) {Assembly.GetExecutingAssembly().GetName().Version} called.");
 #endif
             try {
-                if (HarmonyHelper.IsHarmonyInstalled) {
+                if (Harmony.IsHarmonyInstalled) {
                     action();
                 } else {
                     _harmonyReadyActions.Add(action);
-                    HarmonyHelper.DoOnHarmonyReady(OnHarmonyReady);
+                    Harmony.DoOnHarmonyReady(OnHarmonyReady);
                 }
             }
             catch (Exception ex) {

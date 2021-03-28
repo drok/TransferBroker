@@ -12,7 +12,6 @@ namespace TransferBroker {
     using TransferBroker.API.Manager;
     using TransferBroker.Manager.Impl;
     using TransferBroker.Util;
-    using CitiesHarmony.API;
     using UnityEngine;
     using UnityEngine.Assertions;
 
