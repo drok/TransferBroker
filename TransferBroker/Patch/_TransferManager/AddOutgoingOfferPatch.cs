@@ -21,6 +21,8 @@ namespace TransferBroker.Patch._TransferManager {
             //            Log._DebugFormat("SaneTransferManager.AddOutgoingOfferPatch({0} prio {1}, {2} ({3}))", material.ToString(),
             //                offer.Priority, name, offer.Amount);
 #endif
+            if (material > TransferBroker.LAST_VALID_REASON)
+                return true;
 
             if (offer.Exclude &&
                 offer.Priority == 2 &&

@@ -38,6 +38,9 @@ namespace TransferBroker.Patch._TransferManager {
         [UsedImplicitly]
         public static bool Prefix(TransferManager __instance, TransferManager.TransferReason material, TransferManager.TransferOffer offer) {
 
+            if (material > TransferBroker.LAST_VALID_REASON)
+                return true;
+
             switch (buggedIndustrialBuildingAI) {
                 case DetectionBool.True:
                     /* Implement duplicate offer bug workaround, drop first offer of the tick */

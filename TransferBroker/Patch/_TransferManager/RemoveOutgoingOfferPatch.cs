@@ -16,6 +16,9 @@ namespace TransferBroker.Patch._TransferManager {
 #if DEBUG
             TransferBroker.LogOffer("-Out", 0, material, offer);
 #endif
+            if (material > TransferBroker.LAST_VALID_REASON)
+                return true;
+
             TransferBrokerMod.Installed.broker.RemoveOffers(material, offer);
             return false;
         }
