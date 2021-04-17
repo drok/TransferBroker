@@ -82,7 +82,7 @@ namespace TransferBroker {
             base.OnCreated(_threading);
 
 #if DEBUG
-            Log.Info($"{GetType().Name}.OnCreated() called - '{Thread.CurrentThread.Name}' thread. {Assembly.GetExecutingAssembly().GetName().Version} id={id}/{instances}");
+            Log.Info($"{GetType().Name}.OnCreated() called - {Assembly.GetExecutingAssembly().GetName().Version} id={id}/{instances}");
 #endif
 
             Assert.IsTrue(Dispatcher.currentSafe == ThreadHelper.dispatcher,
@@ -106,6 +106,9 @@ namespace TransferBroker {
             //                installed = true;
             //            }
 
+#if DEBUG
+            Log.Info($"{GetType().Name}.OnCreated() IsGameLoaded={mod.IsGameLoaded} mod.loadingExtension.active={mod.loadingExtension.active} mod.installPendingOnHarmonyInstallation={mod.installPendingOnHarmonyInstallation} TransferBrokerMod.Installed={TransferBrokerMod.Installed == null} mod.ShouldActivate={mod.ShouldActivate}");
+#endif
             if (/* mod.loading.currentMode == AppMode.Game && */
                 mod.IsGameLoaded &&
                 mod.loadingExtension.active &&
@@ -179,7 +182,7 @@ namespace TransferBroker {
 
         public void QueueSimulationThread(Action action) {
 #if DEBUG
-            Log.Info($"{GetType().Name}.QueueSimulationThread({action.GetType().FullName}) called - '{Thread.CurrentThread.Name}' thread. {Assembly.GetExecutingAssembly().GetName().Version} id={id}/{instances}");
+            Log.Info($"{GetType().Name}.QueueSimulationThread({action.GetType().FullName}) called - {Assembly.GetExecutingAssembly().GetName().Version} id={id}/{instances}");
 #endif
             Assert.IsTrue(Dispatcher.currentSafe == ThreadHelper.dispatcher,
                 $"{GetType().Name}.QueueSimulationThread() should only be called on Main Thread (not '{Thread.CurrentThread.Name}')");
@@ -189,7 +192,7 @@ namespace TransferBroker {
 
         public override void OnReleased() {
 #if DEBUG
-            Log.Info($"{GetType().Name}.OnReleased() called - '{Thread.CurrentThread.Name}' thread. {Assembly.GetExecutingAssembly().GetName().Version} id={id}/{instances}");
+            Log.Info($"{GetType().Name}.OnReleased() called - {Assembly.GetExecutingAssembly().GetName().Version} id={id}/{instances}");
 #endif
 
             /* On hot mod load, Mod is OnDisable() first, then ThreadingExtension is OnReleased().

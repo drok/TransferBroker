@@ -28,9 +28,9 @@ namespace TransferBroker {
 #endif
 
             try {
-#if DEBUG
-                Harmony.DEBUG = true;
-#endif
+// #if DEBUG
+//                 Harmony.DEBUG = true;
+// #endif
 #if DEBUG || LABS || EXPERIMENTAL
                 Log.Info("Performing Harmony attribute-driven patching");
 #endif

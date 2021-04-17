@@ -732,6 +732,8 @@ namespace TransferBroker.Manager.Impl {
                         };
                     } else if (ai is HospitalAI) {
                         newReason = TransferManager.TransferReason.Sick;
+                    } else if (ai is CemeteryAI) {
+                        newReason = TransferManager.TransferReason.Dead;
                     } else if (ai is FireStationAI) {
                         newReason = TransferManager.TransferReason.Fire;
                     } else if (ai is CommercialBuildingAI) {

@@ -66,7 +66,7 @@ namespace TransferBroker {
 
             // Log.Warning($"{GetType().Name}.OnCreated(loading not null: {loading != null}) called - '{Thread.CurrentThread.Name}' thread. {Assembly.GetExecutingAssembly().GetName().Version} id={id}/{instances} IsGameLoaded={mod.IsGameLoaded}");
 #if DEBUG
-            Log.Info($"{GetType().Name}.OnCreated({loading.currentMode}) called. {Assembly.GetExecutingAssembly().GetName().Version} id={id}/{instances} loadingComplete={loading.loadingComplete} IsGameLoaded={mod.IsGameLoaded}");
+            Log.Info($"{GetType().Name}.OnCreated({loading.currentMode}) called. {Assembly.GetExecutingAssembly().GetName().Version} id={id}/{instances} loadingComplete={loading.loadingComplete} IsGameLoaded={mod.IsGameLoaded} mod.IsEnabled={mod.IsEnabled} loading.currentMode={loading.currentMode}");
 #endif
 
             Monitor.Enter(inUse_lock);
@@ -170,13 +170,13 @@ namespace TransferBroker {
                     break;
             }
 #if DEBUG
-            Log.Info($"{GetType().Name}.OnLevelLoaded complete. id={id}/{instances}");
+            Log.Info($"{GetType().Name}.OnLevelLoaded complete. id={id}/{instances} active={active} mode={mode}");
 #endif
         }
 
         internal void InstallIfPlayerIsInformed() {
 #if DEBUG
-            Log.Info($"{GetType().Name}.InstallIfPlayerIsInformed called.");
+            Log.Info($"{GetType().Name}.InstallIfPlayerIsInformed called. TransferBrokerMod.Installed={TransferBrokerMod.Installed} mod.installPendingOnHarmonyInstallation={mod.installPendingOnHarmonyInstallation}");
 #endif
             string msg = null;
             if (mod.IsCompatibleWithGame) {

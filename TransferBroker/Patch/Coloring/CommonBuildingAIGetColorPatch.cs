@@ -19,8 +19,8 @@ namespace TransferBroker.Coloring {
          * Blue = Outgoing offer, Green = Incoming Offer.
          */
 
-        const float FULL_LERP_INTENSITY = TransferManager.TRANSFER_PRIORITY_COUNT >> 1;
-        const float MIN_LERP_INTENSITY = 2;
+        const float FULL_LERP_INTENSITY = TransferManager.TRANSFER_PRIORITY_COUNT;
+        const float MIN_LERP_INTENSITY = 0;
 
         private static readonly Color OutgoingColor = new Color(0.1f, 0.1f, 0.8f, 1f);
         private static readonly Color IncomingColor = new Color(0.1f, 0.5f, 0.1f, 1f);

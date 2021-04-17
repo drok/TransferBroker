@@ -14,7 +14,9 @@ namespace TransferBroker {
     using System.Collections.Generic;
     using TransferBroker.API.Manager;
     using TransferBroker.Manager.Impl;
-    using Harmony;
+    using HarmonyManager;
+    // using CitiesHarmony.API;
+    // using HarmonyLib;
     using UnityEngine;
     using UnityEngine.Assertions;
 
@@ -52,8 +54,8 @@ namespace TransferBroker {
 
         public const string PLAYER_IS_INFORMED = "Ability to Read";
         public const string PLAYER_IS_INFORMED_PACKAGE = "1145223801";
-        public const string DOCUMENTATION = "https://steamcommunity.com/sharedfiles/filedetails/?id=2389228470";
-        public const string DOCUMENTATION_TITLE = Versioning.PACKAGE_NAME + " workshop page on Steam";
+        public const string DOCUMENTATION = "https://github.com/drok/TransferBroker/wiki";
+        public const string DOCUMENTATION_TITLE = Versioning.PACKAGE_NAME + " wiki at GitHub";
         public const string DOCUMENTATION_READ_MILESTONE = "Road to Enlightenment";
 
         // Use SharedAssemblyInfo.cs to modify Sane Sourcing version
@@ -106,10 +108,6 @@ namespace TransferBroker {
 
         /* Broker Install Pending on Harmony installation */
         internal bool installPendingOnHarmonyInstallation;
-
-#if CITIESHARMONY_ISSUE_13_WORKAROUND
-        List<Action> _harmonyReadyActions = new List<Action>();
-#endif
 
         internal static TransferBrokerMod Installed = null;
         //         internal static SourcingMod Instance = null;
@@ -187,22 +185,23 @@ namespace TransferBroker {
                 HaveNaturalDisastersDLC = SteamHelper.IsDLCOwned(SteamHelper.DLC.NaturalDisastersDLC);
             }
 
-            IsEnabled = Harmony.SetIncompatibleMods(new HashSet<IncompatibleMod>(){
-                new IncompatibleMod(){ assemblyName = "EnhancedDistrictServices", },
-                new IncompatibleMod(){ assemblyName = "EnhancedHearseAI",},
-                new IncompatibleMod(){ assemblyName = "EnhancedGarbageTruckAI",},
-                new IncompatibleMod(){ assemblyName = "ServicesOptimizationModule",},
-                new IncompatibleMod(){ assemblyName = "GSteigertDistricts",},
-            });
-
-            if (!IsEnabled) {
-                Log.Warning($"{Versioning.PACKAGE_NAME} is disabled due to conflicting mods. See Harmony Report for details");
-            }
+            // IsEnabled = Harmony.SetIncompatibleMods(new HashSet<IncompatibleMod>(){
+            //     new IncompatibleMod(){ assemblyName = "EnhancedDistrictServices", },
+            //     new IncompatibleMod(){ assemblyName = "EnhancedHearseAI",},
+            //     new IncompatibleMod(){ assemblyName = "EnhancedGarbageTruckAI",},
+            //     new IncompatibleMod(){ assemblyName = "ServicesOptimizationModule",},
+            //     new IncompatibleMod(){ assemblyName = "GSteigertDistricts",},
+            // });
+            // 
+            // if (!IsEnabled) {
+            //     Log.Warning($"{Versioning.PACKAGE_NAME} is disabled due to conflicting mods. See Harmony Report for details");
+            // }
 
             if (SceneManager.GetActiveScene().name == "Game") {
                 IsGameLoaded = SceneManager.GetActiveScene().isLoaded;
             }
 
+            IsEnabled = true;
 #if TEST_EXCEPTION_HANDLING
             Assert.IsTrue(false, "Forced Harmony Debug Assertion in TB.Mod.OnEnabled()");
             throw new Exception("Forced Harmony Debug Exception in TB.Mod.OnEnabled()");
@@ -263,52 +262,16 @@ namespace TransferBroker {
 
         }
 
-#if CITIESHARMONY_ISSUE_13_WORKAROUND
-        private void DoWhenHarmonyReady(Action action) {
-#if DEBUG
-            Log.Info($"{GetType().Name}.DoWhenHarmonyReady({action.GetType().Name}) {Assembly.GetExecutingAssembly().GetName().Version} called.");
-#endif
-            try {
-                if (Harmony.IsHarmonyInstalled) {
-                    action();
-                } else {
-                    _harmonyReadyActions.Add(action);
-                    Harmony.DoOnHarmonyReady(OnHarmonyReady);
-                }
-            }
-            catch (Exception ex) {
-                Log.Info($"Failed to schedule Harmony Ready ({ex.Message})\n{ex.StackTrace}");
-            }
-//            catch {
-//                Log.Error($"Failed to access CitiesHarmony.API ... is the DLL present?");
-//            }
-        }
-        private void OnHarmonyReady() {
-            foreach(var action in _harmonyReadyActions) {
-                try {
-                    action();
-                }
-                catch (Exception ex) {
-                    Log.Info($"Uncaught Exception while invoking action: '{ex.Message}'\n{ex.StackTrace}");
-                }
-            }
-            _harmonyReadyActions.Clear();
-        }
-#endif
         internal void PreInstall() {
 #if DEBUG
             Log.Info($"{GetType().Name}.PreInstall() {Assembly.GetExecutingAssembly().GetName().Version} called.");
 #endif
 
             try {
-#if CITIESHARMONY_ISSUE_13_WORKAROUND
-                DoWhenHarmonyReady(() => DoNowOrInLiveGame(SetupUsefulMethods));
-#else
-                HarmonyHelper.DoOnHarmonyReady(() => OnReadyToInstall(DoInstall));
-#endif
+                Harmony.DoOnHarmonyReady(() => DoNowOrInLiveGame(SetupUsefulMethods));
             }
-            catch {
-                Log.Error($"Failed to access CitiesHarmony.API ... is the DLL present?");
+            catch (Exception ex) {
+                Log.Error($"Failed to access CitiesHarmony.API ... is the DLL present? {ex}");
             }
         }
 
@@ -319,14 +282,11 @@ namespace TransferBroker {
 
             installPendingOnHarmonyInstallation = true;
             try {
-#if CITIESHARMONY_ISSUE_13_WORKAROUND
-                DoWhenHarmonyReady(() => DoNowOrInLiveGame(DoInstall));
-#else
-                HarmonyHelper.DoOnHarmonyReady(() => OnReadyToInstall(DoInstall));
-#endif
+                Harmony.DoOnHarmonyReady(() => DoNowOrInLiveGame(DoInstall));
             }
-            catch {
-                Log.Error($"Failed to access CitiesHarmony.API ... is the DLL present?");
+            catch (Exception ex)
+            {
+                Log.Error($"Failed to access CitiesHarmony.API ... is the DLL present? ex: {ex}");
             }
         }
 
@@ -460,14 +420,7 @@ Warning.Main          1,440.359354: TransferBrokerMod.Uninstall() 0.3.1.30570 ca
                  * then it would not matter if it calls it multiple time, each action would only run once, and it can
                  * be cleared in OnDisable()
                  */
-
-#if CITIESHARMONY_ISSUE_13_WORKAROUND
-                _harmonyReadyActions.Clear();
-#else
-                Assert.IsTrue(false,
-                    "Clearing HarmonyHelper.DoOnHarmonyReady() queue on Uninstall should be implemented. See https://github.com/boformer/CitiesHarmony/issues/13");
-#endif
-
+                Harmony.CancelOnHarmonyReady();
                 installPendingOnHarmonyInstallation = false;
             }
         }
@@ -517,33 +470,7 @@ Warning.Main          1,440.359354: TransferBrokerMod.Uninstall() 0.3.1.30570 ca
              * the Simulation thread activates and sets Installed
              */
             IsEnabled = false;
-#if false
-            if (Installed != null) {
-                if (threading != null) {
-                    threading.Uninstall();
-                }
-            }
-            else if (installPendingOnHarmonyInstallation) {
-                /* Eg, this mod deleted while waiting for Harmony to be subscribed and downloaded,
-                 * or after LoadingExtension.OnCreated(Game) but before Simulation thread first runs
-                 */
-#if CITIESHARMONY_ISSUE_13_WORKAROUND
-                _harmonyReadyActions.Clear();
-#else
-                Assert.IsTrue(false,
-                    "Clearing HarmonyHelper.DoOnHarmonyReady() queue on Disabled should be implemented. See https://github.com/boformer/CitiesHarmony/issues/13");
-#endif
-            }
-#endif
-
-#if CITIESHARMONY_ISSUE_13_WORKAROUND
-            Assert.IsTrue(_harmonyReadyActions.Count == 0,
-                "There should be no remaining enqueued actions pending Harmony Install after Disable");
-#else
-            /* Appropriate HarmonyHelper check for empty queue goes HERE, when implemented in CitiesHarmony */
-            Assert.IsTrue(false,
-                "There should be no remaining enqueued actions pending Harmony Install after Disable");
-#endif
+            Harmony.CancelOnHarmonyReady();
         }
 
 #if DEBUG
@@ -600,7 +527,7 @@ Warning.Main          1,440.359354: TransferBrokerMod.Uninstall() 0.3.1.30570 ca
             // Log.Info("Fixing non-created nodes with problems...");
             // FixNonCreatedNodeProblems();
 #if DEBUG
-            Log.InfoFormat("Notifying managers... {0}", ev.ToString());
+            Log.InfoFormat("Notifying managers.... {0}\n{1}", ev.ToString(), new System.Diagnostics.StackTrace(true));
 #endif
             if (broker == null) {
 //                Log.Error(Name + " failed to notify, the broker is not yet started (benign message if this TB is incompatible)");
@@ -631,7 +558,7 @@ Warning.Main          1,440.359354: TransferBrokerMod.Uninstall() 0.3.1.30570 ca
             // Log.Info("Fixing non-created nodes with problems...");
             // FixNonCreatedNodeProblems();
 #if DEBUG
-            Log.InfoFormat("Notifying managers... {0}", ev.ToString());
+            Log.InfoFormat("Notifying managers... {0}\n{1}", ev.ToString(), new System.Diagnostics.StackTrace(true));
 #endif
             if (broker == null) {
 //                Log.Error("Failed to notify, the broker is not yet started");
@@ -656,16 +583,7 @@ Warning.Main          1,440.359354: TransferBrokerMod.Uninstall() 0.3.1.30570 ca
             Log.Info($"{GetType().Name}.RegisterUI() {Assembly.GetExecutingAssembly().GetName().Version}");
 #endif
 
-            try {
-#if CITIESHARMONY_ISSUE_13_WORKAROUND
-                DoWhenHarmonyReady(() => DoNowOrInLiveGame(DoRegisterUI));
-#else
-                HarmonyHelper.DoOnHarmonyReady(() => OnReadyToInstall(DoRegisterUI));
-#endif
-            }
-            catch {
-                Log.Error($"Failed to access CitiesHarmony.API ... is the DLL present?");
-            }
+            Harmony.DoOnHarmonyReady(() => DoNowOrInLiveGame(DoRegisterUI));
 #if DEBUG
             Log.Info($"{GetType().Name}.RegisterUI() {Assembly.GetExecutingAssembly().GetName().Version} DONE");
 #endif

@@ -28,6 +28,6 @@ using System.Runtime.InteropServices;
 #if LABS || DEBUG || EXPERIMENTAL
 [assembly: AssemblyVersion("0.4.1.*")]
 #else
-[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyVersion("0.5.0.0")]
 [assembly: AssemblyFileVersion(TransferBroker.Versioning.MyFileVersion)]
 #endif

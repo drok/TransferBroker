@@ -50,7 +50,7 @@ namespace TransferBroker {
         [UsedImplicitly]
         public override void OnCreated(IBuilding _building) {
 #if DEBUG
-            Log.Info($"{GetType().Name}.OnCreated({_building}) called - '{Thread.CurrentThread.Name}' thread. {Assembly.GetExecutingAssembly().GetName().Version}");
+            Log.Info($"{GetType().Name}.OnCreated({_building}) called - {Assembly.GetExecutingAssembly().GetName().Version}");
 #endif
             building = _building;
             base.OnCreated(_building);
@@ -60,7 +60,7 @@ namespace TransferBroker {
         public override void OnReleased() {
 
 #if DEBUG
-            Log.Info($"{GetType().Name}.OnReleased() called - '{Thread.CurrentThread.Name}' thread. {Assembly.GetExecutingAssembly().GetName().Version}");
+            Log.Info($"{GetType().Name}.OnReleased() called - {Assembly.GetExecutingAssembly().GetName().Version}");
 #endif
             building = null;
 
@@ -74,7 +74,7 @@ namespace TransferBroker {
         public override void OnBuildingCreated(ushort id) {
 
 #if DEBUG
-            Log.Info($"{GetType().Name}.OnBuildingCreated() called - '{Thread.CurrentThread.Name}' thread. {Assembly.GetExecutingAssembly().GetName().Version}");
+            Log.Info($"{GetType().Name}.OnBuildingCreated({id}) called - {Assembly.GetExecutingAssembly().GetName().Version}");
 #endif
 
             if (TransferBroker.IsActivatorBuilding(id)) {
@@ -85,7 +85,7 @@ namespace TransferBroker {
         [UsedImplicitly]
         public override void OnBuildingReleased(ushort id) {
 #if DEBUG
-            Log.Info($"{GetType().Name}.OnBuildingReleased({id}) called - '{Thread.CurrentThread.Name}' thread. {Assembly.GetExecutingAssembly().GetName().Version}");
+            Log.Info($"{GetType().Name}.OnBuildingReleased({id}) called - {Assembly.GetExecutingAssembly().GetName().Version}");
 #endif
 
             mod.NotifyManagers(TransferBrokerMod.Notification.Deactivated, id);
