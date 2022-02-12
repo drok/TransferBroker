@@ -32,7 +32,7 @@ namespace TransferBroker.Manager.Impl {
         public Dictionary<ushort, List<ushort>> cargoConnections;
 #endif
 
-        public const TransferManager.TransferReason LAST_VALID_REASON = TransferManager.TransferReason.IntercityBus;
+        public const TransferManager.TransferReason LAST_VALID_REASON = TransferManager.TransferReason.BiofuelBus;
         public const string ACTIVATION_BUILDING = "Transport Tower";
         public const float MINIMUM_ACTIVATION_PARAM = 1f;
         public const float MAXIMUM_ACTIVATION_PARAM = 4f;
